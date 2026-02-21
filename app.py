@@ -42,7 +42,7 @@ vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
 # ---------- HEADER ----------
 st.markdown("""
-<h1 style='text-align:center;'>♻ Eco Recycling Assistant</h1>
+<h1 style='text-align:center;'>♻ Eco Recycling Chatbot</h1>
 <p style='text-align:center; opacity:0.7;'>AI-powered smart waste classifier</p>
 """, unsafe_allow_html=True)
 
@@ -134,4 +134,5 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
