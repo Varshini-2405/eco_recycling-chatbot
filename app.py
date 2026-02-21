@@ -52,31 +52,29 @@ country = st.selectbox(
     ["India", "Singapore", "United States"]
 )
 
-
 # ---------- LOCALIZED RULES ----------
 rules = {
-    "India 🇮🇳": {
+    "India": {
         "recyclable": "Place in Dry Waste Bin.",
         "organic": "Place in Wet Waste Bin.",
         "trash": "Dispose in General Waste.",
         "hazardous": "Take to Authorized Hazardous Waste Facility.",
         "e-waste": "Dispose at E-Waste Collection Center."
     },
-    "Singapore 🇸🇬": {
+    "Singapore": {
         "recyclable": "Place in Blue Recycling Bin.",
         "organic": "Dispose via food waste collection.",
         "trash": "Place in General Waste Bin.",
         "hazardous": "Bring to Toxic Industrial Waste Facility.",
         "e-waste": "Use E-Waste Recycling Points."
     },
-    "United States 🇺🇸": {
+    "United States": {
         "recyclable": "Place in Recycling Cart.",
         "organic": "Place in Compost Bin (if available).",
         "trash": "Place in Trash Bin.",
         "hazardous": "Use Household Hazardous Waste Facility.",
         "e-waste": "Use Certified E-Waste Recycler."
-    },
-    
+    }
 }
 
 # ---------- INPUT ----------
@@ -86,7 +84,7 @@ if user_input:
     input_vec = vectorizer.transform([user_input])
     probabilities = model.predict_proba(input_vec)
     max_prob = np.max(probabilities)
-    prediction = model.predict(input_vec)[0]
+    prediction = model.predict(input_vec)[0].lower()
 
     if max_prob < 0.30:
         st.error("Item not recognized. Please check spelling.")
@@ -100,18 +98,20 @@ if user_input:
         }
 
         st.markdown(f"""
-        <div class="result-badge" style="background:{color_map[prediction]};">
+        <div class="result-badge" style="background:{color_map.get(prediction, "#2ecc71")};">
             Category: {prediction.upper()}
         </div>
         """, unsafe_allow_html=True)
 
-        # Localized rule
+        # ---------- Disposal Guide ----------
         st.write("🌍 Disposal Guide:")
-    if country in rules and prediction in rules[country]:
-      st.write(rules[country][prediction])
-    else:
-      st.write("Disposal guide not available.")
-        # Confidence
+
+        if country in rules and prediction in rules[country]:
+            st.write(rules[country][prediction])
+        else:
+            st.write("Disposal guide not available.")
+
+        # ---------- Confidence ----------
         st.progress(int(max_prob * 100))
         st.write(f"Confidence: {round(max_prob,2)}")
 
@@ -133,9 +133,4 @@ elif points >= 50:
 elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
-
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
-
-
-
-
