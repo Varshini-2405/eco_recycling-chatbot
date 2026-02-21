@@ -47,19 +47,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------- LOCATION DROPDOWN ----------
-country_display = st.selectbox(
+country = st.selectbox(
     "Select Your Country",
-    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸", "United Kingdom 🇬🇧"]
+    ["India", "Singapore", "United States"]
 )
-
-country_map = {
-    "India 🇮🇳": "India",
-    "Singapore 🇸🇬": "Singapore",
-    "United States 🇺🇸": "United States",
-    "United Kingdom 🇬🇧": "United Kingdom"
-}
-
-country = country_map[country_display]
 
 
 # ---------- LOCALIZED RULES ----------
@@ -85,13 +76,7 @@ rules = {
         "hazardous": "Use Household Hazardous Waste Facility.",
         "e-waste": "Use Certified E-Waste Recycler."
     },
-    "United Kingdom 🇬🇧": {
-        "recyclable": "Place in Recycling Bin.",
-        "organic": "Use Food Waste Caddy.",
-        "trash": "Place in General Waste Bin.",
-        "hazardous": "Contact Local Council for Disposal.",
-        "e-waste": "Recycle at WEEE Collection Points."
-    }
+    
 }
 
 # ---------- INPUT ----------
@@ -122,8 +107,10 @@ if user_input:
 
         # Localized rule
         st.write("🌍 Disposal Guide:")
-        st.write(rules[country].get(prediction, "No disposal rule found for this category."))
-
+    if country in rules and prediction in rules[country]:
+      st.write(rules[country][prediction])
+    else:
+      st.write("Disposal guide not available.")
         # Confidence
         st.progress(int(max_prob * 100))
         st.write(f"Confidence: {round(max_prob,2)}")
@@ -148,6 +135,7 @@ elif points >= 20:
 
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
 
 
