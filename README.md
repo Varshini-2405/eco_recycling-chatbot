@@ -3,9 +3,8 @@ Eco Recycling Chatbot is an AI-powered waste classification web application that
 This project combines Machine Learning, Web Development, and Environmental Awareness features into a single interactive application.
 
 ## Live Demo:
-(Add your Streamlit public link here after deployment)
+  https://ecorecycling-chatbot.streamlit.app/
 
----
 ## Project Overview:
 
 The Eco Recycling Chatbot is a smart web application that:
