@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 st.set_page_config(
-    page_title="Eco Recycling Assistant",
+    page_title="Eco Recycling Chatbot",
     page_icon="♻",
     layout="centered"
 )
@@ -134,3 +134,4 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
