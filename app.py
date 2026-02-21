@@ -47,9 +47,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------- LOCATION DROPDOWN ----------
-country = st.selectbox(
+country_display = st.selectbox(
     "Select Your Country",
-    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸", "United Kingdom 🇬🇧 "]
+    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸", "United Kingdom 🇬🇧"]
+)
+
+country_map = {
+    "India 🇮🇳": "India",
+    "Singapore 🇸🇬": "Singapore",
+    "United States 🇺🇸": "United States",
+    "United Kingdom 🇬🇧": "United Kingdom"
+}
+
+country = country_map[country_display]
 )
 
 # ---------- LOCALIZED RULES ----------
@@ -138,4 +148,5 @@ elif points >= 20:
 
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
