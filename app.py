@@ -51,7 +51,7 @@ country = st.selectbox(
     "Select Your Country",
     ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸", "United Kingdom 🇬🇧 "]
 )
-prediction = prediction.lower()
+
 # ---------- LOCALIZED RULES ----------
 rules = {
     "India 🇮🇳": {
@@ -138,3 +138,4 @@ elif points >= 20:
 
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
