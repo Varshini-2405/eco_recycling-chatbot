@@ -49,9 +49,9 @@ st.markdown("""
 # ---------- LOCATION DROPDOWN ----------
 country = st.selectbox(
     "Select Your Country",
-    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸", "United Kingdom Uk "]
+    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸", "United Kingdom 🇬🇧 "]
 )
-
+prediction = prediction.lower()
 # ---------- LOCALIZED RULES ----------
 rules = {
     "India 🇮🇳": {
@@ -112,7 +112,7 @@ if user_input:
 
         # Localized rule
         st.write("🌍 Disposal Guide:")
-        st.write(rules[country][prediction])
+        st.write(rules[country].get(prediction, "No disposal rule found for this category."))
 
         # Confidence
         st.progress(int(max_prob * 100))
@@ -135,5 +135,6 @@ elif points >= 50:
     st.markdown("🌍 **Green Warrior**")
 elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
+
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
