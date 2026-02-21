@@ -60,7 +60,7 @@ country_map = {
 }
 
 country = country_map[country_display]
-)
+
 
 # ---------- LOCALIZED RULES ----------
 rules = {
@@ -148,5 +148,6 @@ elif points >= 20:
 
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
 
