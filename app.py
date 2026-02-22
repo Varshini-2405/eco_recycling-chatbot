@@ -5,7 +5,7 @@ import tensorflow as tf
 from PIL import Image
 
 st.set_page_config(
-    page_title="Eco Recycling Chatbot",
+    page_title="Eco Recycling Assistant",
     page_icon="♻",
     layout="wide"
 )
@@ -47,57 +47,52 @@ def load_image_model():
 text_model, vectorizer = load_text_model()
 image_model = load_image_model()
 
-# ---------------- MODERN CSS ----------------
+# ---------------- CLEAN MODERN CSS ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0f2027, #134e4a, #065f46);
+    background: linear-gradient(135deg, #134e4a, #065f46);
     color: white;
 }
+
 .eco-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .eco-score {
     background: rgba(255,255,255,0.1);
     padding: 10px 20px;
     border-radius: 15px;
     font-weight: bold;
 }
+
 .result-badge {
-    backdrop-filter: blur(12px);
-    background: rgba(255,255,255,0.15);
-    border-radius: 20px;
-    padding: 25px;
-    font-size: 28px;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
     margin-top: 20px;
-    box-shadow: 0px 6px 18px rgba(0,0,0,0.4);
-}
-.marquee-container {
-    overflow: hidden;
-    white-space: nowrap;
-    margin-top: 10px;
-}
-.marquee-text {
-    display: inline-block;
-    padding-left: 100%;
-    animation: scroll-left 18s linear infinite;
-    font-size: 18px;
-    font-weight: 500;
-    color: #a7f3d0;
-}
-@keyframes scroll-left {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-100%); }
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
 st.sidebar.title("🌍 Eco Control Panel")
+
+st.sidebar.markdown("## ℹ About")
+st.sidebar.write("""
+The Eco Recycling Assistant is an AI-based waste classification system.
+
+• Classifies waste using text (Machine Learning)  
+• Identifies waste from images (Deep Learning - CNN)  
+• Provides country-specific disposal rules  
+• Encourages sustainable behavior using eco-points  
+""")
+
+st.sidebar.markdown("---")
 
 mode = st.sidebar.radio("Choose Input Type", ["Text", "Image"])
 
@@ -113,64 +108,14 @@ st.sidebar.markdown(f"### {st.session_state.eco_points} Points")
 # ---------------- HEADER ----------------
 st.markdown(f"""
 <div class="eco-header">
-    <h1>♻ Eco Recycling Chatbot</h1>
+    <h1>♻ Eco Recycling Assistant</h1>
     <div class="eco-score">🌱 Total Points: {st.session_state.eco_points}</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------- MOVING BANNER ----------------
-st.markdown("""
-<style>
-.ticker-wrap {
-  width: 100%;
-  overflow: hidden;
-  background: rgba(255,255,255,0.08);
-  padding: 8px 0;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-.ticker {
-  display: inline-block;
-  white-space: nowrap;
-  animation: ticker 20s linear infinite;
-  font-size: 17px;
-  font-weight: 500;
-  color: #a7f3d0;
-  padding-left: 100%;
-}
-
-@keyframes ticker {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-100%); }
-}
-</style>
-
-<div class="ticker-wrap">
-  <div class="ticker">
-    ♻ AI-powered waste classification • Country-specific recycling guidance • Image & Text ML models • Gamified eco reward system • Track your environmental impact 🌍
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-# ---------------- LEVEL SYSTEM ----------------
-level = st.session_state.eco_points // 50 + 1
-progress_to_next = (st.session_state.eco_points % 50) / 50
-
-st.markdown(f"### 🏆 Level {level} Recycler")
-st.progress(progress_to_next)
-
-# ---------------- ENVIRONMENT IMPACT ----------------
-trees_saved = st.session_state.eco_points // 20
-co2_saved = st.session_state.eco_points * 0.5
-
-st.markdown("### 🌱 Your Environmental Impact")
-st.write(f"🌳 Trees Saved: {trees_saved}")
-st.write(f"🌍 CO₂ Reduced: {round(co2_saved,1)} kg")
-
 st.markdown("---")
 
-# ---------------- RULES ----------------
+# ---------------- COUNTRY RULES ----------------
 rules = {
     "India 🇮🇳": {
         "recyclable": "Place in Dry Waste Bin.",
@@ -189,12 +134,11 @@ rules = {
     }
 }
 
-# ---------------- CENTER CONTENT ----------------
+# ---------------- MAIN CONTENT ----------------
 st.markdown("## ♻ Waste Classification")
 
-# ================= TEXT =================
+# ================= TEXT MODE =================
 if mode == "Text":
-    st.markdown("💡 Try: plastic bottle, newspaper, banana peel, glass bottle")
 
     user_input = st.text_input("Enter waste item")
 
@@ -208,13 +152,13 @@ if mode == "Text":
             st.error("Item not recognized.")
         else:
             color_map = {
-                "recyclable": "#2ecc71",
-                "organic": "#27ae60",
-                "trash": "#e74c3c"
+                "recyclable": "#22c55e",
+                "organic": "#16a34a",
+                "trash": "#dc2626"
             }
 
             st.markdown(f"""
-            <div class="result-badge" style="background:{color_map.get(prediction,'#2ecc71')};">
+            <div class="result-badge" style="background:{color_map.get(prediction,'#22c55e')};">
                 Category: {prediction.upper()}
             </div>
             """, unsafe_allow_html=True)
@@ -225,14 +169,11 @@ if mode == "Text":
             st.progress(int(max_prob * 100))
             st.write(f"Confidence: {round(max_prob,2)}")
 
-            if max_prob > 0.80:
-                st.balloons()
-
             st.session_state.eco_points += 10
             st.session_state.history.append(prediction)
-            st.success("🎉 +10 Eco Points Earned!")
+            st.success("✔ 10 Eco Points Added")
 
-# ================= IMAGE =================
+# ================= IMAGE MODE =================
 if mode == "Image":
 
     uploaded_file = st.file_uploader("Upload waste image", type=["jpg","png","jpeg"])
@@ -258,8 +199,8 @@ if mode == "Image":
             final_category = "trash"
 
         color_map = {
-            "recyclable": "#2ecc71",
-            "trash": "#e74c3c"
+            "recyclable": "#22c55e",
+            "trash": "#dc2626"
         }
 
         st.markdown(f"""
@@ -274,12 +215,9 @@ if mode == "Image":
         st.progress(int(confidence * 100))
         st.write(f"Confidence: {round(confidence,2)}")
 
-        if confidence > 0.80:
-            st.balloons()
-
         st.session_state.eco_points += 10
         st.session_state.history.append(final_category)
-        st.success("🎉 +10 Eco Points Earned!")
+        st.success("✔ 10 Eco Points Added")
 
 # ---------------- HISTORY ----------------
 st.markdown("---")
@@ -289,4 +227,3 @@ st.write(st.session_state.history)
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
-
