@@ -47,34 +47,95 @@ text_model, vectorizer = load_text_model()
 image_model = load_image_model()
 
 # ---------------- CUSTOM CSS ----------------
+# ---------------- MODERN CSS ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #0f2027, #134e4a, #065f46);
     color: white;
 }
-.stTextInput input {
-    background-color: #1f2937 !important;
-    color: white !important;
-    border-radius: 12px !important;
-    padding: 12px !important;
+
+.sidebar .sidebar-content {
+    background: linear-gradient(180deg, #064e3b, #022c22);
+    color: white;
 }
+
+.eco-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.3);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .result-badge {
-    padding: 18px;
-    border-radius: 14px;
-    font-size: 22px;
+    padding: 20px;
+    border-radius: 20px;
+    font-size: 26px;
     font-weight: bold;
     text-align: center;
     margin-top: 20px;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.4);
 }
+
+h1 {
+    font-weight: 700;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- HEADER ----------------
+
+# ---------------- SIDEBAR ----------------
+st.sidebar.title("🌍 Eco Control Panel")
+
+mode = st.sidebar.radio("Choose Input Type", ["Text", "Image"])
+
+country = st.sidebar.selectbox(
+    "Select Your Country",
+    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸"]
+)
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("🌱 Your Eco Points")
+st.sidebar.markdown(f"### {st.session_state.eco_points} Points")
+
+if st.session_state.eco_points >= 100:
+    st.sidebar.success("🏆 Recycling Champion")
+elif st.session_state.eco_points >= 50:
+    st.sidebar.info("🌍 Green Warrior")
+elif st.session_state.eco_points >= 20:
+    st.sidebar.warning("🌿 Eco Beginner")
+
+
+# ---------------- MAIN HEADER ----------------
 st.markdown("""
-<h1 style='text-align:center;'>♻ Eco Recycling Chatbot</h1>
-<p style='text-align:center; opacity:0.7;'>AI-powered smart waste classifier</p>
+<h1 style='text-align:center;'>♻ Eco Recycling Assistant</h1>
+<p style='text-align:center; opacity:0.8;'>Smart AI-Powered Waste Classification System</p>
 """, unsafe_allow_html=True)
+
+
+# ---------------- ECO DASHBOARD RIGHT PANEL ----------------
+col1, col2 = st.columns([3,1])
+
+with col2:
+    st.markdown("""
+    <div class="eco-card">
+        <h3>🌿 Eco Score</h3>
+        <h2>{}</h2>
+        <p>Keep recycling to earn badges!</p>
+    </div>
+    """.format(st.session_state.eco_points), unsafe_allow_html=True)
+
+    progress = min(st.session_state.eco_points, 100)
+    st.progress(progress / 100)
+
+
+with col1:
+    st.markdown("### ♻ Waste Classification")
+
 
 # ---------------- COUNTRY SELECTION ----------------
 country = st.selectbox(
@@ -217,6 +278,7 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
 
 
