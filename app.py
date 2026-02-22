@@ -17,14 +17,13 @@ if "eco_points" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# ---------------- LOAD TEXT MODEL ----------------
+# ---------------- LOAD MODELS ----------------
 @st.cache_resource
 def load_text_model():
     model = pickle.load(open("recycling_model.pkl", "rb"))
     vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
     return model, vectorizer
 
-# ---------------- LOAD IMAGE MODEL ----------------
 @st.cache_resource
 def load_image_model():
     base_model = tf.keras.applications.MobileNetV2(
@@ -77,6 +76,23 @@ st.markdown("""
     margin-top: 20px;
     box-shadow: 0px 6px 18px rgba(0,0,0,0.4);
 }
+.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 10px;
+}
+.marquee-text {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scroll-left 18s linear infinite;
+    font-size: 18px;
+    font-weight: 500;
+    color: #a7f3d0;
+}
+@keyframes scroll-left {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -102,45 +118,16 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
+# ---------------- MOVING BANNER ----------------
 st.markdown("""
-<style>
-.marquee {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    box-sizing: border-box;
-    animation: marquee 18s linear infinite;
-    font-size: 18px;
-    font-weight: 500;
-    color: #a7f3d0;
-    padding: 10px 0;
-}
-
-@keyframes marquee {
-    0%   { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-</style>
-
-<div class="marquee">
-♻ Eco Recycling Chatbot uses AI to classify waste via text or images and provides country-specific disposal guidance. 🌍 Promote sustainability and track your environmental impact in real-time!
+<div class="marquee-container">
+    <div class="marquee-text">
+        ♻ AI-powered waste classification using text & images • Country-specific recycling rules • Gamified eco-reward system • Track your sustainability impact in real-time 🌍
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------- ABOUT SECTION ----------------
-with st.expander("ℹ About This Chatbot"):
-    st.write("""
-    The Eco Recycling Assistant is an AI-powered waste classification system.
-    
-    It uses:
-    • Machine Learning for text-based waste prediction  
-    • Deep Learning (MobileNetV2) for image-based waste recognition  
-    • Localized recycling rules for different countries  
-    • Gamification to encourage sustainable behavior  
-    
-    The goal is to help users correctly dispose of waste and promote environmental awareness.
-    """)
+st.markdown("---")
 
 # ---------------- LEVEL SYSTEM ----------------
 level = st.session_state.eco_points // 50 + 1
@@ -178,101 +165,97 @@ rules = {
     }
 }
 
-# ---------------- CENTER LAYOUT ----------------
-col1, col2, col3 = st.columns([1,2,1])
+# ---------------- CENTER CONTENT ----------------
+st.markdown("## ♻ Waste Classification")
 
-with col2:
+# ================= TEXT =================
+if mode == "Text":
+    st.markdown("💡 Try: plastic bottle, newspaper, banana peel, glass bottle")
 
-    st.markdown("## ♻ Waste Classification")
+    user_input = st.text_input("Enter waste item")
 
-    # ================= TEXT =================
-    if mode == "Text":
-        st.markdown("💡 Try: plastic bottle, newspaper, banana peel, glass bottle")
+    if user_input:
+        input_vec = vectorizer.transform([user_input])
+        probabilities = text_model.predict_proba(input_vec)
+        max_prob = np.max(probabilities)
+        prediction = text_model.predict(input_vec)[0]
 
-        user_input = st.text_input("Enter waste item")
-
-        if user_input:
-            input_vec = vectorizer.transform([user_input])
-            probabilities = text_model.predict_proba(input_vec)
-            max_prob = np.max(probabilities)
-            prediction = text_model.predict(input_vec)[0]
-
-            if max_prob < 0.30:
-                st.error("Item not recognized.")
-            else:
-                color_map = {
-                    "recyclable": "#2ecc71",
-                    "organic": "#27ae60",
-                    "trash": "#e74c3c"
-                }
-
-                st.markdown(f"""
-                <div class="result-badge" style="background:{color_map.get(prediction,'#2ecc71')};">
-                    Category: {prediction.upper()}
-                </div>
-                """, unsafe_allow_html=True)
-
-                st.write("🌍 Disposal Guide:")
-                st.write(rules[country].get(prediction, "Not available"))
-
-                st.progress(int(max_prob * 100))
-                st.write(f"Confidence: {round(max_prob,2)}")
-
-                if max_prob > 0.80:
-                    st.balloons()
-
-                st.session_state.eco_points += 10
-                st.session_state.history.append(prediction)
-                st.success("🎉 +10 Eco Points Earned!")
-
-    # ================= IMAGE =================
-    if mode == "Image":
-
-        uploaded_file = st.file_uploader("Upload waste image", type=["jpg","png","jpeg"])
-
-        if uploaded_file:
-            img = Image.open(uploaded_file).convert("RGB")
-            st.image(img, use_container_width=True)
-
-            img = img.resize((224, 224))
-            img_array = np.array(img) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
-
-            prediction = image_model.predict(img_array)
-            class_index = np.argmax(prediction)
-            confidence = np.max(prediction)
-
-            image_classes = ["cardboard","glass","metal","paper","plastic","trash"]
-            predicted_class = image_classes[class_index]
-
-            if predicted_class in ["cardboard","paper","plastic","metal","glass"]:
-                final_category = "recyclable"
-            else:
-                final_category = "trash"
-
+        if max_prob < 0.30:
+            st.error("Item not recognized.")
+        else:
             color_map = {
                 "recyclable": "#2ecc71",
+                "organic": "#27ae60",
                 "trash": "#e74c3c"
             }
 
             st.markdown(f"""
-            <div class="result-badge" style="background:{color_map.get(final_category)};">
-                Category: {final_category.upper()}
+            <div class="result-badge" style="background:{color_map.get(prediction,'#2ecc71')};">
+                Category: {prediction.upper()}
             </div>
             """, unsafe_allow_html=True)
 
             st.write("🌍 Disposal Guide:")
-            st.write(rules[country].get(final_category, "Not available"))
+            st.write(rules[country].get(prediction, "Not available"))
 
-            st.progress(int(confidence * 100))
-            st.write(f"Confidence: {round(confidence,2)}")
+            st.progress(int(max_prob * 100))
+            st.write(f"Confidence: {round(max_prob,2)}")
 
-            if confidence > 0.80:
+            if max_prob > 0.80:
                 st.balloons()
 
             st.session_state.eco_points += 10
-            st.session_state.history.append(final_category)
+            st.session_state.history.append(prediction)
             st.success("🎉 +10 Eco Points Earned!")
+
+# ================= IMAGE =================
+if mode == "Image":
+
+    uploaded_file = st.file_uploader("Upload waste image", type=["jpg","png","jpeg"])
+
+    if uploaded_file:
+        img = Image.open(uploaded_file).convert("RGB")
+        st.image(img, use_container_width=True)
+
+        img = img.resize((224, 224))
+        img_array = np.array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+
+        prediction = image_model.predict(img_array)
+        class_index = np.argmax(prediction)
+        confidence = np.max(prediction)
+
+        image_classes = ["cardboard","glass","metal","paper","plastic","trash"]
+        predicted_class = image_classes[class_index]
+
+        if predicted_class in ["cardboard","paper","plastic","metal","glass"]:
+            final_category = "recyclable"
+        else:
+            final_category = "trash"
+
+        color_map = {
+            "recyclable": "#2ecc71",
+            "trash": "#e74c3c"
+        }
+
+        st.markdown(f"""
+        <div class="result-badge" style="background:{color_map.get(final_category)};">
+            Category: {final_category.upper()}
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.write("🌍 Disposal Guide:")
+        st.write(rules[country].get(final_category, "Not available"))
+
+        st.progress(int(confidence * 100))
+        st.write(f"Confidence: {round(confidence,2)}")
+
+        if confidence > 0.80:
+            st.balloons()
+
+        st.session_state.eco_points += 10
+        st.session_state.history.append(final_category)
+        st.success("🎉 +10 Eco Points Earned!")
 
 # ---------------- HISTORY ----------------
 st.markdown("---")
@@ -282,4 +265,3 @@ st.write(st.session_state.history)
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
-
