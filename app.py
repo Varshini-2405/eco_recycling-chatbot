@@ -120,14 +120,38 @@ st.markdown(f"""
 
 # ---------------- MOVING BANNER ----------------
 st.markdown("""
-<div class="marquee-container">
-    <div class="marquee-text">
-        ♻ AI-powered waste classification using text & images • Country-specific recycling rules • Gamified eco-reward system • Track your sustainability impact in real-time 🌍
-    </div>
+<style>
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: rgba(255,255,255,0.08);
+  padding: 8px 0;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.ticker {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker 20s linear infinite;
+  font-size: 17px;
+  font-weight: 500;
+  color: #a7f3d0;
+  padding-left: 100%;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+</style>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    ♻ AI-powered waste classification • Country-specific recycling guidance • Image & Text ML models • Gamified eco reward system • Track your environmental impact 🌍
+  </div>
 </div>
 """, unsafe_allow_html=True)
-
-st.markdown("---")
 
 # ---------------- LEVEL SYSTEM ----------------
 level = st.session_state.eco_points // 50 + 1
@@ -265,3 +289,4 @@ st.write(st.session_state.history)
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
