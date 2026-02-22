@@ -23,7 +23,7 @@ def load_text_model():
 
 @st.cache_resource
 def load_image_model():
-    return tf.keras.models.load_model("image_model.h5")
+   return tf.keras.models.load_model("image_model.keras")
 
 text_model, vectorizer = load_text_model()
 image_model = load_image_model()
@@ -201,3 +201,4 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
