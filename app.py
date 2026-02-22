@@ -124,15 +124,22 @@ st.markdown("""
 </style>
 
 <div class="marquee">
-♻ Eco Recycling Assistant uses AI to classify waste via text or images and provides country-specific disposal guidance. 🌍 Promote sustainability and track your environmental impact in real-time!
+♻ Eco Recycling Chatbot uses AI to classify waste via text or images and provides country-specific disposal guidance. 🌍 Promote sustainability and track your environmental impact in real-time!
 </div>
 """, unsafe_allow_html=True)
 
 # ---------------- ABOUT SECTION ----------------
 with st.expander("ℹ About This Chatbot"):
     st.write("""
-    The Eco Recycling Assistant is an AI-powered chatbot that classifies waste using text or image input
-     and provides correct disposal guidance based on country-specific recycling rules.
+    The Eco Recycling Assistant is an AI-powered waste classification system.
+    
+    It uses:
+    • Machine Learning for text-based waste prediction  
+    • Deep Learning (MobileNetV2) for image-based waste recognition  
+    • Localized recycling rules for different countries  
+    • Gamification to encourage sustainable behavior  
+    
+    The goal is to help users correctly dispose of waste and promote environmental awareness.
     """)
 
 # ---------------- LEVEL SYSTEM ----------------
@@ -275,3 +282,4 @@ st.write(st.session_state.history)
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
