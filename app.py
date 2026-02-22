@@ -92,7 +92,7 @@ st.sidebar.markdown(f"### {st.session_state.eco_points} Points")
 # ---------------- HEADER ----------------
 st.markdown(f"""
 <div class="eco-header">
-    <h1>♻ Eco Recycling Assistant</h1>
+    <h1>♻ Eco Recycling Chatbot</h1>
     <div class="eco-score">🌱 Total Points: {st.session_state.eco_points}</div>
 </div>
 """, unsafe_allow_html=True)
@@ -208,3 +208,4 @@ with col2:
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
