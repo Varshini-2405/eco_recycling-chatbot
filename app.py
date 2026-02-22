@@ -157,13 +157,16 @@ if uploaded_file:
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-    prediction = image_model.predict(img_array)
-    class_index = np.argmax(prediction)
-    confidence = np.max(prediction)
-    st.write("Predicted TrashNet Class:", predicted_class)
-    
-    image_classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
-    predicted_class = image_classes[class_index]
+   prediction = image_model.predict(img_array)
+   class_index = np.argmax(prediction)
+   confidence = np.max(prediction)
+
+   image_classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+   predicted_class = image_classes[class_index]
+
+    # 👇 ADD DEBUG HERE
+   st.write("Predicted TrashNet Class:", predicted_class)
+   st.write("Confidence:", confidence)
 
     # ---------- STRICT LOGIC ----------
     if confidence < 0.60:
@@ -215,5 +218,6 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
 
