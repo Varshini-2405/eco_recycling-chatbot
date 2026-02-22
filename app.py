@@ -48,6 +48,7 @@ image_model = load_image_model()
 
 # ---------------- CUSTOM CSS ----------------
 # ---------------- MODERN CSS ----------------
+# ---------------- MODERN CSS ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
@@ -55,19 +56,18 @@ st.markdown("""
     color: white;
 }
 
-.sidebar .sidebar-content {
-    background: linear-gradient(180deg, #064e3b, #022c22);
-    color: white;
+.eco-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0px;
 }
 
-.eco-card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 18px;
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.3);
-    text-align: center;
-    margin-bottom: 20px;
+.eco-score {
+    background: rgba(255,255,255,0.1);
+    padding: 12px 20px;
+    border-radius: 15px;
+    font-weight: bold;
 }
 
 .result-badge {
@@ -79,17 +79,35 @@ st.markdown("""
     margin-top: 20px;
     box-shadow: 0px 6px 18px rgba(0,0,0,0.4);
 }
-
-h1 {
-    font-weight: 700;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 
 # ---------------- SIDEBAR ----------------
 st.sidebar.title("🌍 Eco Control Panel")
+
+mode = st.sidebar.radio("Choose Input Type", ["Text", "Image"])
+
+country = st.sidebar.selectbox(
+    "Select Your Country",
+    ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸"]
+)
+
+st.sidebar.markdown("---")
+st.sidebar.write("Earn points by classifying waste correctly!")
+
+# ---------------- TOP HEADER WITH LIVE POINTS ----------------
+st.markdown(f"""
+<div class="eco-header">
+    <h1>♻ Eco Recycling Assistant</h1>
+    <div class="eco-score">🌱 Total Points: {st.session_state.eco_points}</div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<hr>", unsafe_allow_html=True)
+
+# ---------------- CENTER CONTENT ----------------
+st.markdown("## ♻ Waste Classification")
 
 mode = st.sidebar.radio("Choose Input Type", ["Text", "Image"])
 
@@ -278,6 +296,7 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
 
 
