@@ -160,12 +160,13 @@ if uploaded_file:
     prediction = image_model.predict(img_array)
     class_index = np.argmax(prediction)
     confidence = np.max(prediction)
-
+    st.write("Predicted TrashNet Class:", predicted_class)
+    
     image_classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
     predicted_class = image_classes[class_index]
 
     # ---------- STRICT LOGIC ----------
-    if confidence < 0.65:
+    if confidence < 0.60:
         final_category = "trash"
     else:
         if predicted_class in ["cardboard", "paper"]:
@@ -214,4 +215,5 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
 
