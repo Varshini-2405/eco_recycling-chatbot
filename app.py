@@ -14,6 +14,9 @@ st.set_page_config(
 if "eco_points" not in st.session_state:
     st.session_state.eco_points = 0
 
+if "history" not in st.session_state:
+    st.session_state.history = []
+
 # ---------------- LOAD TEXT MODEL ----------------
 @st.cache_resource
 def load_text_model():
@@ -64,8 +67,10 @@ st.markdown("""
     font-weight: bold;
 }
 .result-badge {
-    padding: 25px;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.15);
     border-radius: 20px;
+    padding: 25px;
     font-size: 28px;
     font-weight: bold;
     text-align: center;
@@ -98,6 +103,54 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 st.markdown("---")
+st.markdown("""
+<style>
+.marquee {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    animation: marquee 18s linear infinite;
+    font-size: 18px;
+    font-weight: 500;
+    color: #a7f3d0;
+    padding: 10px 0;
+}
+
+@keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+</style>
+
+<div class="marquee">
+♻ Eco Recycling Assistant uses AI to classify waste via text or images and provides country-specific disposal guidance. 🌍 Promote sustainability and track your environmental impact in real-time!
+</div>
+""", unsafe_allow_html=True)
+
+# ---------------- ABOUT SECTION ----------------
+with st.expander("ℹ About This Chatbot"):
+    st.write("""
+    The Eco Recycling Assistant is an AI-powered chatbot that classifies waste using text or image input
+     and provides correct disposal guidance based on country-specific recycling rules.
+    """)
+
+# ---------------- LEVEL SYSTEM ----------------
+level = st.session_state.eco_points // 50 + 1
+progress_to_next = (st.session_state.eco_points % 50) / 50
+
+st.markdown(f"### 🏆 Level {level} Recycler")
+st.progress(progress_to_next)
+
+# ---------------- ENVIRONMENT IMPACT ----------------
+trees_saved = st.session_state.eco_points // 20
+co2_saved = st.session_state.eco_points * 0.5
+
+st.markdown("### 🌱 Your Environmental Impact")
+st.write(f"🌳 Trees Saved: {trees_saved}")
+st.write(f"🌍 CO₂ Reduced: {round(co2_saved,1)} kg")
+
+st.markdown("---")
 
 # ---------------- RULES ----------------
 rules = {
@@ -118,7 +171,7 @@ rules = {
     }
 }
 
-# ---------------- MAIN CENTER LAYOUT ----------------
+# ---------------- CENTER LAYOUT ----------------
 col1, col2, col3 = st.columns([1,2,1])
 
 with col2:
@@ -127,6 +180,7 @@ with col2:
 
     # ================= TEXT =================
     if mode == "Text":
+        st.markdown("💡 Try: plastic bottle, newspaper, banana peel, glass bottle")
 
         user_input = st.text_input("Enter waste item")
 
@@ -157,7 +211,11 @@ with col2:
                 st.progress(int(max_prob * 100))
                 st.write(f"Confidence: {round(max_prob,2)}")
 
+                if max_prob > 0.80:
+                    st.balloons()
+
                 st.session_state.eco_points += 10
+                st.session_state.history.append(prediction)
                 st.success("🎉 +10 Eco Points Earned!")
 
     # ================= IMAGE =================
@@ -202,10 +260,18 @@ with col2:
             st.progress(int(confidence * 100))
             st.write(f"Confidence: {round(confidence,2)}")
 
+            if confidence > 0.80:
+                st.balloons()
+
             st.session_state.eco_points += 10
+            st.session_state.history.append(final_category)
             st.success("🎉 +10 Eco Points Earned!")
+
+# ---------------- HISTORY ----------------
+st.markdown("---")
+st.markdown("### 📊 Classification History")
+st.write(st.session_state.history)
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
-
