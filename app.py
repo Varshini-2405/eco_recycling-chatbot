@@ -147,54 +147,58 @@ if mode == "Text":
             st.success("🎉 +10 Eco Points Earned!")
 
 # ================= IMAGE CLASSIFICATION =================
-if mode == "Image":
-    uploaded_file = st.file_uploader("Upload waste image", type=["jpg", "png", "jpeg"])
+uploaded_file = st.file_uploader("Upload waste image", type=["jpg", "png", "jpeg"])
 
-    if uploaded_file:
-        img = Image.open(uploaded_file).convert("RGB")
-        st.image(img, caption="Uploaded Image", use_container_width=True)
+if uploaded_file:
+    img = Image.open(uploaded_file).convert("RGB")
+    st.image(img, caption="Uploaded Image", use_container_width=True)
 
-        img = img.resize((224, 224))
-        img_array = np.array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+    img = img.resize((224, 224))
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
 
-        prediction = image_model.predict(img_array)
-        class_index = np.argmax(prediction)
-        confidence = np.max(prediction)
+    prediction = image_model.predict(img_array)
+    class_index = np.argmax(prediction)
+    confidence = np.max(prediction)
 
-        image_classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
-        predicted_class = image_classes[class_index]
+    image_classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+    predicted_class = image_classes[class_index]
 
-        mapping = {
-            "cardboard": "recyclable",
-            "paper": "recyclable",
-            "plastic": "recyclable",
-            "metal": "recyclable",
-            "glass": "recyclable",
-            "trash": "trash"
-        }
+    # ---------- STRICT LOGIC ----------
+    if confidence < 0.65:
+        final_category = "trash"
+    else:
+        if predicted_class in ["cardboard", "paper"]:
+            final_category = "recyclable"
+        elif predicted_class in ["plastic", "metal", "glass"]:
+            final_category = "recyclable"
+        elif predicted_class == "trash":
+            final_category = "trash"
+        else:
+            final_category = "trash"
 
-        final_category = mapping.get(predicted_class, "trash")
+    color_map = {
+        "recyclable": "#2ecc71",
+        "organic": "#27ae60",
+        "trash": "#e74c3c",
+        "hazardous": "#f39c12",
+        "e-waste": "#3498db"
+    }
 
-        color_map = {
-            "recyclable": "#2ecc71",
-            "trash": "#e74c3c"
-        }
+    st.markdown(f"""
+    <div class="result-badge" style="background:{color_map.get(final_category,'#2ecc71')};">
+        Category: {final_category.upper()}
+    </div>
+    """, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div class="result-badge" style="background:{color_map.get(final_category,'#2ecc71')};">
-            Category: {final_category.upper()}
-        </div>
-        """, unsafe_allow_html=True)
+    st.write("🌍 Disposal Guide:")
+    st.write(rules[country].get(final_category, "Disposal guide not available."))
 
-        st.write("🌍 Disposal Guide:")
-        st.write(rules[country].get(final_category, "Disposal guide not available."))
+    st.progress(int(confidence * 100))
+    st.write(f"Confidence: {round(confidence,2)}")
 
-        st.progress(int(confidence * 100))
-        st.write(f"Confidence: {round(confidence,2)}")
-
-        st.session_state.eco_points += 10
-        st.success("🎉 +10 Eco Points Earned!")
+    st.session_state.eco_points += 10
+    st.success("🎉 +10 Eco Points Earned!")
 
 # ---------------- ECO POINTS DISPLAY ----------------
 st.markdown("---")
@@ -210,3 +214,4 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
