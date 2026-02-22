@@ -5,7 +5,7 @@ import tensorflow as tf
 from PIL import Image
 
 st.set_page_config(
-    page_title="Eco Recycling Assistant",
+    page_title="Eco Recycling Chatbot",
     page_icon="♻",
     layout="centered"
 )
@@ -14,16 +14,34 @@ st.set_page_config(
 if "eco_points" not in st.session_state:
     st.session_state.eco_points = 0
 
-# ---------------- LOAD MODELS ----------------
+# ---------------- LOAD TEXT MODEL ----------------
 @st.cache_resource
 def load_text_model():
     model = pickle.load(open("recycling_model.pkl", "rb"))
     vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
     return model, vectorizer
 
+# ---------------- LOAD IMAGE MODEL (WEIGHTS ONLY) ----------------
 @st.cache_resource
 def load_image_model():
-   return tf.keras.models.load_model("image_model.keras")
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=(224, 224, 3),
+        include_top=False,
+        weights="imagenet"
+    )
+
+    base_model.trainable = False
+
+    model = tf.keras.Sequential([
+        base_model,
+        tf.keras.layers.GlobalAveragePooling2D(),
+        tf.keras.layers.Dense(128, activation="relu"),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(6, activation="softmax")
+    ])
+
+    model.load_weights("image_model.weights.h5")
+    return model
 
 text_model, vectorizer = load_text_model()
 image_model = load_image_model()
@@ -54,7 +72,7 @@ st.markdown("""
 
 # ---------------- HEADER ----------------
 st.markdown("""
-<h1 style='text-align:center;'>♻ Eco Recycling Assistant</h1>
+<h1 style='text-align:center;'>♻ Eco Recycling Chatbot</h1>
 <p style='text-align:center; opacity:0.7;'>AI-powered smart waste classifier</p>
 """, unsafe_allow_html=True)
 
@@ -92,9 +110,7 @@ rules = {
 # ---------------- MODE SELECTOR ----------------
 mode = st.radio("Choose Input Type", ["Text", "Image"])
 
-# =====================================================
-# ================= TEXT CLASSIFICATION ===============
-# =====================================================
+# ================= TEXT CLASSIFICATION =================
 if mode == "Text":
     user_input = st.text_input("Enter waste item")
 
@@ -130,15 +146,13 @@ if mode == "Text":
             st.session_state.eco_points += 10
             st.success("🎉 +10 Eco Points Earned!")
 
-# =====================================================
-# ================= IMAGE CLASSIFICATION ==============
-# =====================================================
+# ================= IMAGE CLASSIFICATION =================
 if mode == "Image":
     uploaded_file = st.file_uploader("Upload waste image", type=["jpg", "png", "jpeg"])
 
     if uploaded_file:
-        img = Image.open(uploaded_file)
-        st.image(img, caption="Uploaded Image", use_column_width=True)
+        img = Image.open(uploaded_file).convert("RGB")
+        st.image(img, caption="Uploaded Image", use_container_width=True)
 
         img = img.resize((224, 224))
         img_array = np.array(img) / 255.0
@@ -149,10 +163,8 @@ if mode == "Image":
         confidence = np.max(prediction)
 
         image_classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
-
         predicted_class = image_classes[class_index]
 
-        # Map image classes to text categories
         mapping = {
             "cardboard": "recyclable",
             "paper": "recyclable",
@@ -166,10 +178,7 @@ if mode == "Image":
 
         color_map = {
             "recyclable": "#2ecc71",
-            "organic": "#27ae60",
-            "trash": "#e74c3c",
-            "hazardous": "#f39c12",
-            "e-waste": "#3498db"
+            "trash": "#e74c3c"
         }
 
         st.markdown(f"""
@@ -201,4 +210,3 @@ elif points >= 20:
     st.markdown("🌿 **Eco Beginner**")
 
 st.markdown("<br><hr><center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
-
