@@ -5,7 +5,7 @@ import tensorflow as tf
 from PIL import Image
 
 st.set_page_config(
-    page_title="Eco Recycling Assistant",
+    page_title="Eco Recycling Chatbot",
     page_icon="♻",
     layout="wide"
 )
@@ -13,9 +13,6 @@ st.set_page_config(
 # ---------------- SESSION STATE ----------------
 if "eco_points" not in st.session_state:
     st.session_state.eco_points = 0
-
-if "history" not in st.session_state:
-    st.session_state.history = []
 
 # ---------------- LOAD MODELS ----------------
 @st.cache_resource
@@ -47,7 +44,7 @@ def load_image_model():
 text_model, vectorizer = load_text_model()
 image_model = load_image_model()
 
-# ---------------- SIMPLE CLEAN CSS ----------------
+# ---------------- CLEAN CSS ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
@@ -100,7 +97,7 @@ It uses Machine Learning and Deep Learning to classify waste from text or images
 # ---------------- HEADER ----------------
 st.markdown(f"""
 <div class="header-box">
-    <h1>♻ Eco Recycling Assistant</h1>
+    <h1>♻ Eco Recycling Chatbot</h1>
     <p>An AI-powered waste classification chatbot that identifies waste from text or images.</p>
     <p>Provides country-specific recycling guidance and promotes sustainable disposal habits.</p>
     <div class="points-box">🌱 Total Points: {st.session_state.eco_points}</div>
@@ -166,7 +163,6 @@ if mode == "Text":
             st.write(f"Confidence: {round(max_prob,2)}")
 
             st.session_state.eco_points += 10
-            st.session_state.history.append(prediction)
             st.success("✔ 10 Eco Points Added")
 
 # ================= IMAGE MODE =================
@@ -212,13 +208,7 @@ if mode == "Image":
         st.write(f"Confidence: {round(confidence,2)}")
 
         st.session_state.eco_points += 10
-        st.session_state.history.append(final_category)
         st.success("✔ 10 Eco Points Added")
-
-# ---------------- HISTORY ----------------
-st.markdown("---")
-st.markdown("### 📊 Classification History")
-st.write(st.session_state.history)
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
