@@ -114,17 +114,21 @@ rules = {
     "India 🇮🇳": {
         "recyclable": "Place in Dry Waste Bin.",
         "organic": "Place in Wet Waste Bin.",
-        "trash": "Dispose in General Waste."
+        "trash": "Dispose in General Waste.",
+        "hazardous": "Handle carefully and dispose as hazardous waste."
     },
     "Singapore 🇸🇬": {
         "recyclable": "Place in Blue Recycling Bin.",
         "organic": "Dispose via food waste collection.",
-        "trash": "Place in General Waste Bin."
+        "trash": "Place in General Waste Bin.",
+        "hazardous": "Dispose carefully in Hazardous Waste Collection."
+        
     },
     "United States 🇺🇸": {
         "recyclable": "Place in Recycling Cart.",
         "organic": "Place in Compost Bin (if available).",
-        "trash": "Place in Trash Bin."
+        "trash": "Place in Trash Bin.",
+        "hazardous": "Dispose at Special Hazardous Waste Collection Center."
     }
 }
 
@@ -185,13 +189,18 @@ if mode == "Image":
         image_classes = ["cardboard","glass","metal","paper","plastic","trash"]
         predicted_class = image_classes[class_index]
 
-        if predicted_class in ["cardboard","paper","plastic","metal","glass"]:
+        if predicted_class in ["cardboard","paper","plastic","metal"]:
             final_category = "recyclable"
+
+        elif predicted_class=="glass":
+            final_category = "hazardous"
+            
         else:
             final_category = "trash"
 
         color_map = {
             "recyclable": "#22c55e",
+            "hazardous": "#f59e0b",
             "trash": "#dc2626"
         }
 
@@ -213,3 +222,4 @@ if mode == "Image":
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>© 2026 Eco Recycling Assistant</center>", unsafe_allow_html=True)
+
