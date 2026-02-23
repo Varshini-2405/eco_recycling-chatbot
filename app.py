@@ -47,34 +47,30 @@ def load_image_model():
 text_model, vectorizer = load_text_model()
 image_model = load_image_model()
 
-# ---------------- CLEAN MODERN CSS ----------------
+# ---------------- SIMPLE CLEAN CSS ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #134e4a, #065f46);
+    background: linear-gradient(135deg, #14532d, #065f46);
     color: white;
 }
-
-.eco-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header-box {
+    text-align: center;
+    margin-bottom: 20px;
 }
-
-.eco-score {
+.points-box {
     background: rgba(255,255,255,0.1);
-    padding: 10px 20px;
-    border-radius: 15px;
+    padding: 8px 20px;
+    border-radius: 12px;
     font-weight: bold;
 }
-
 .result-badge {
-    padding: 20px;
-    border-radius: 15px;
-    font-size: 24px;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 22px;
     font-weight: bold;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -82,38 +78,39 @@ st.markdown("""
 # ---------------- SIDEBAR ----------------
 st.sidebar.title("🌍 Eco Control Panel")
 
-st.sidebar.markdown("## ℹ About")
-st.sidebar.write("""
-The Eco Recycling Assistant is an AI-based waste classification system.
-
-• Classifies waste using text (Machine Learning)  
-• Identifies waste from images (Deep Learning - CNN)  
-• Provides country-specific disposal rules  
-• Encourages sustainable behavior using eco-points  
-""")
-
-st.sidebar.markdown("---")
-
-mode = st.sidebar.radio("Choose Input Type", ["Text", "Image"])
-
 country = st.sidebar.selectbox(
     "Select Your Country",
     ["India 🇮🇳", "Singapore 🇸🇬", "United States 🇺🇸"]
 )
 
+mode = st.sidebar.radio("Choose Input Type", ["Text", "Image"])
+
 st.sidebar.markdown("---")
-st.sidebar.subheader("🌱 Your Eco Points")
-st.sidebar.markdown(f"### {st.session_state.eco_points} Points")
+st.sidebar.subheader("🌱 Eco Points")
+st.sidebar.markdown(f"### {st.session_state.eco_points}")
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("## ℹ About")
+st.sidebar.write("""
+Eco Recycling Assistant is an AI-based waste classification system.
+
+It uses Machine Learning and Deep Learning to classify waste from text or images and provides country-specific disposal guidance.
+""")
 
 # ---------------- HEADER ----------------
 st.markdown(f"""
-<div class="eco-header">
+<div class="header-box">
     <h1>♻ Eco Recycling Assistant</h1>
-    <div class="eco-score">🌱 Total Points: {st.session_state.eco_points}</div>
+    <p>An AI-powered waste classification chatbot that identifies waste from text or images.</p>
+    <p>Provides country-specific recycling guidance and promotes sustainable disposal habits.</p>
+    <div class="points-box">🌱 Total Points: {st.session_state.eco_points}</div>
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown("---")
+
+# ---------------- MAIN COUNTRY DISPLAY ----------------
+st.markdown(f"### 🌍 Selected Country: **{country}**")
 
 # ---------------- COUNTRY RULES ----------------
 rules = {
@@ -134,7 +131,6 @@ rules = {
     }
 }
 
-# ---------------- MAIN CONTENT ----------------
 st.markdown("## ♻ Waste Classification")
 
 # ================= TEXT MODE =================
