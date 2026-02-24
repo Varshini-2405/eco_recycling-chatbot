@@ -25,18 +25,18 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   Confidence threshold handling
   Input validation logic
 
-# Categories Predicted:
+### Categories Predicted:
   Recyclable
   Organic
   Trash
   Hazardous
   E-Waste
 
-# Model Files:
+### Model Files:
   recycling_model.pkl
   vectorizer.pkl
 
-# Training notebook:
+### Training notebook:
    model_training.ipynb
 
 ## 2️ Image Classification Model
@@ -47,7 +47,7 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   Custom dense layers
   Softmax output layer (6 classes)
 
-# Categories Predicted:
+### Categories Predicted:
    Cardboard
    Glass
    Metal
@@ -55,17 +55,17 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
    Plastic
    Trash
 
-# Image Preprocessing:
+### Image Preprocessing:
   Resize to 224 × 224 pixels
   Normalize pixel values
   Convert to NumPy array
   Expand dimensions before prediction
 
-# Model Handling:
+### Model Handling:
   Trained model weights saved after training
   Loaded into Streamlit app for real-time prediction
 
-# Localized Recycling Guidelines:
+## Localized Recycling Guidelines:
 
   The system provides disposal instructions based on selected country:
   🇮🇳 India
@@ -74,19 +74,19 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   🇬🇧 United Kingdom
   The app adapts recycling guidance according to local waste management rules.
 
-# Gamification Features:
+## Gamification Features:
 
   To promote environmental awareness:
   +10 Eco Points for every correct classification
 
-# Achievement badges:
+## Achievement badges:
 
   Eco Beginner
   Green Warrior
   Recycling Champion
   This encourages responsible behavior and user engagement.
 
-# User Interface:
+## User Interface:
   
   Built using Streamlit with:
   Custom CSS styling
@@ -98,7 +98,7 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   Text and image input modes
   The goal was to create a modern, interactive web application.
 
-# Project Structure:
+## Project Structure:
   Eco-Recycling-Chatbot/
   │
   ├── app.py
@@ -116,7 +116,7 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   └── README.md
 
 
-# How to Run Locally:
+## How to Run Locally:
 
   Clone the repository
   Install dependencies:
@@ -125,7 +125,7 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   streamlit run app.py
 
   
-# Future Improvements:
+## Future Improvements:
 
   Persistent eco-score storage
   User authentication system
@@ -134,7 +134,7 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   Full frontend framework integration
   Mobile application version
 
-# Technologies Used:
+## Technologies Used:
 
   Python
   Scikit-learn
@@ -144,15 +144,12 @@ This project combines Natural Language Processing (NLP), Computer Vision (CV), L
   NumPy
   HTML & CSS (custom styling)
 
-# Author:
+## Author:
 
   This project was developed as a complete end-to-end Machine Learning application covering:
   Data preprocessing
   Model training (NLP + CV)
   Model evaluation
-
-Web application development
-
-Cloud deployment
-
-It demonstrates the practical application of AI in promoting sustainable waste management and responsible environmental behavior.
+  Web application development
+  Cloud deployment
+  It demonstrates the practical application of AI in promoting sustainable waste management and responsible environmental behavior.
